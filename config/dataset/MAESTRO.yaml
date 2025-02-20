@@ -1,0 +1,33 @@
+train:
+  _target_: dataset.dataset_2_random.Dataset # choosing which data class to use
+  root_dir: "/home/chou150/depot/datasets/maestro/maestro_with_mistakes_unaligned"
+  split: train
+  split_json_path: /home/chou150/depot/datasets/maestro/maestro-v3.0.0/maestro-v3.0.0.json
+  mel_length: ${mel_length}
+  event_length: ${event_length}
+  midi_folder: MIDI
+  audio_filename: mix_16k.wav
+  num_rows_per_batch: ${num_rows_per_batch}
+  split_frame_length: ${split_frame_length}
+  is_deterministic: ${dataset_is_deterministic}
+  is_randomize_tokens: ${dataset_is_randomize_tokens}
+  is_random_alignment_shift_augmentation: ${dataset_is_random_alignment_shift_augmentation}
+val:
+  _target_: dataset.dataset_2_random.Dataset # choosing which data class to use
+  root_dir: "/home/chou150/depot/datasets/maestro/maestro_with_mistakes_unaligned"
+  split: validation
+  split_json_path: /home/chou150/depot/datasets/maestro/maestro-v3.0.0/maestro-v3.0.0.json
+  mel_length: ${mel_length}
+  event_length: ${event_length}
+  midi_folder: MIDI
+  audio_filename: mix_16k.wav   
+  num_rows_per_batch: ${num_rows_per_batch}
+  split_frame_length: ${split_frame_length}
+  is_deterministic: ${dataset_is_deterministic}
+  is_randomize_tokens: ${dataset_is_randomize_tokens}
+  
+test:
+  root_dir: "/home/chou150/depot/datasets/maestro/maestro_with_mistakes_unaligned" # this is what we use for testing
+  split: test
+  split_json_path: /home/chou150/depot/datasets/maestro/maestro-v3.0.0/maestro-v3.0.0.json
+collate_fn: dataset.dataset_2_random.collate_fn

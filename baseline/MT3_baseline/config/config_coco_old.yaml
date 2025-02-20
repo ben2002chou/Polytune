@@ -1,0 +1,73 @@
+num_epochs: 800
+devices: 1
+mode: "train"
+model_type: ${hydra:runtime.choices.model} # parse the filename of the config
+dataset_type: ${hydra:runtime.choices.dataset}
+seed: 365
+path: 
+#/home/chou150/code/cav-mae/exp_midi/testmae02-audioset-cav-mae-balNone-lr5e-5-epoch25-bs256-normTrue-c0.01-p1.0-tpFalse-mr-unstructured-0.75-20240429035316/models/audio_model.best.pth
+event_length: 1024
+mel_length: 256
+num_rows_per_batch: 12
+split_frame_length: 2000
+dataset_is_deterministic: False
+dataset_is_randomize_tokens: True
+dataset_use_score: False
+dataset_use_mistake: True
+
+optim:
+  error_loss_weight: 8
+  lr: 2e-5
+  warmup_steps: 4000 #64500
+  num_epochs: ${num_epochs}
+  num_steps_per_epoch: 323  # 1289# TODO: this is not good practice. Ideally we can get this from dataloader.
+  min_lr: 1e-5
+
+grad_accum: 1
+
+dataloader:
+  train:
+    batch_size: 16
+    num_workers: 32 # 2
+  val:
+    batch_size: 16
+    num_workers: 32 # 0
+
+modelcheckpoint:
+  monitor: 'val_loss'
+  mode: 'min'
+  save_last: True
+  save_top_k: 5
+  save_weights_only: False
+  every_n_epochs: 50
+  filename: '{epoch}-{step}-{val_loss:.4f}'
+
+trainer:
+  precision: bf16-mixed
+  max_epochs: ${num_epochs}
+  accelerator: 'gpu'
+  accumulate_grad_batches: ${grad_accum}
+  num_sanity_val_steps: 2
+  log_every_n_steps: 100
+  strategy: "ddp_find_unused_parameters_false"
+  devices: ${devices}
+  check_val_every_n_epoch: 5
+  # deterministic: True
+
+eval:
+  is_sanity_check: False
+  eval_first_n_examples: 
+  eval_after_num_epoch: 400
+  eval_per_epoch: 1
+  eval_dataset:
+  eval_dataset_old:
+  exp_tag_name: 
+  audio_dir:    # why is this empty?
+  midi_dir: 
+  contiguous_inference:
+  batch_size: 1
+
+defaults:
+  - model: MT3Net
+  - dataset: CocoChorales_old
+  # TODO: we need to specify num_samples_per_batch here from 8 to 12

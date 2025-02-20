@@ -1,0 +1,38 @@
+train:
+  _target_: dataset.dataset_2_random_old_coco.Dataset # choosing which data class to use
+  root_dir: "/depot/yunglu/data/datasets_ben/errors_8_12_cocochorales"
+  split: train
+  split_json_path: /depot/yunglu/data/datasets_ben/cocochorales_full/split.json
+  mel_length: ${mel_length}
+  event_length: ${event_length}
+  midi_folder: MIDI
+  audio_filename: mix_16k.wav
+  num_rows_per_batch: ${num_rows_per_batch}
+  split_frame_length: ${split_frame_length}
+  is_deterministic: ${dataset_is_deterministic}
+  is_randomize_tokens: ${dataset_is_randomize_tokens}
+  use_score: ${dataset_use_score}
+  use_mistake: ${dataset_use_mistake}
+val:
+  _target_: dataset.dataset_2_random_old_coco.Dataset # choosing which data class to use
+  root_dir: "/depot/yunglu/data/datasets_ben/errors_8_12_cocochorales"
+  split: valid
+  split_json_path: /depot/yunglu/data/datasets_ben/cocochorales_full/split.json
+  mel_length: ${mel_length}
+  event_length: ${event_length}
+  midi_folder: MIDI
+  audio_filename: mix_16k.wav   
+  num_rows_per_batch: ${num_rows_per_batch}
+  split_frame_length: ${split_frame_length}
+  is_deterministic: ${dataset_is_deterministic}
+  is_randomize_tokens: ${dataset_is_randomize_tokens}
+  use_score: ${dataset_use_score}
+  use_mistake: ${dataset_use_mistake}
+  
+test:
+  root_dir: "/depot/yunglu/data/datasets_ben/errors_8_12_cocochorales" # this is what we use for testing
+  split: test
+  split_json_path: /depot/yunglu/data/datasets_ben/cocochorales_full/split.json
+  use_score: ${dataset_use_score}
+  use_mistake: ${dataset_use_mistake}
+collate_fn: dataset.dataset_2_random_old_coco.collate_fn
