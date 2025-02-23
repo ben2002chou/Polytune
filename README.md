@@ -78,6 +78,7 @@ python polytune_test_inference.py \
 
 Note: Actual Links will be added soon.
 
+You can also generate your own error datasets based on our code [here](https://github.com/ben2002chou/CocoChorales-E_MAESTRO-E):
 ## Pre-trained models
 
 Pretrained weights can be downloaded here:
