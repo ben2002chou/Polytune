@@ -91,11 +91,16 @@ Note: Actual Links will be added soon.
 Baseline: Located in ./baseline/MT3_baseline
 
 ## Citation
-If you use our dataset in your research, please consider citing our paper:
+
+If you use our dataset in your research, please cite our paper:
+
+```bibtex
 @inproceedings{chou_detecting_2025,
-  author = {Chou, Benjamin Shiue-Hal and Jajal, Purvish and Eliopoulos, Nicholas John and Nadolsky, Tim and Yang, Cheng-Yun and Ravi, Nikita and Davis, James C. and Yun, Kristen Yeon-Ji and Lu, Yung-Hsiang},
-  booktitle = {{AAAI} {Conference} on {Artificial} {Intelligence}},
+  author    = {Chou, Benjamin Shiue-Hal and Jajal, Purvish and Eliopoulos, Nicholas John 
+               and Nadolsky, Tim and Yang, Cheng-Yun and Ravi, Nikita and Davis, James C. 
+               and Yun, Kristen Yeon-Ji and Lu, Yung-Hsiang},
+  title     = {Detecting Music Performance Errors with Transformers},
+  booktitle = {AAAI Conference on Artificial Intelligence},
   publisher = {AAAI},
-  title = {Detecting {Music} {Performance} {Errors} with {Transformers}},
-  year = {2025}
+  year      = {2025}
 }
