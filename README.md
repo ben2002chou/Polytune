@@ -82,9 +82,8 @@ You can also generate your own error datasets based on our code [here](https://g
 ## Pre-trained models
 
 Pretrained weights can be downloaded here:
-- [Download Weights](#)
+- [Download Weights](https://huggingface.co/ben2002chou/Polytune/tree/main)
 
-Note: Actual Links will be added soon.
 
 ## Reproducing Results
 
