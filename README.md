@@ -73,10 +73,8 @@ python polytune_test_inference.py \
 
 ## Datasets
 
-- CocoChorales-E: [link](#)
-- MAESTRO-E: [link](#)
-
-Note: Actual Links will be added soon.
+- CocoChorales-E: [link](https://app.globus.org/file-manager?origin_id=55272af5-6d96-4381-a3ea-8d7197e57b33&origin_path=%2F)
+- MAESTRO-E: [link](https://app.globus.org/file-manager?origin_id=63862b12-9f93-4f7c-ad7b-5a14ab5d1af2&origin_path=%2F)
 
 You can also generate your own error datasets based on our code [here](https://github.com/ben2002chou/CocoChorales-E_MAESTRO-E):
 ## Pre-trained models
