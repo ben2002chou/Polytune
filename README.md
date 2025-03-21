@@ -79,7 +79,7 @@ python polytune_test_inference.py \
 - Downloading this dataset requires [Globus](https://www.globus.org) or [Globus Connect Personal](https://www.globus.org/globus-connect-personal).
 
 1. Log in and follow setup instructions  
-2. Go to the dataset link: [https://app.globus.org/file-manager?origin_id=YOUR_SHARED_COLLECTION_ID](https://app.globus.org/file-manager?origin_id=YOUR_SHARED_COLLECTION_ID)  
+2. Go to the dataset link 
 3. Click **“Transfer or Sync to…”**  
 4. Choose your machine or HPC endpoint as the destination
 
