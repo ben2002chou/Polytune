@@ -76,6 +76,13 @@ python polytune_test_inference.py \
 - CocoChorales-E: [link](https://app.globus.org/file-manager?origin_id=55272af5-6d96-4381-a3ea-8d7197e57b33&origin_path=%2F)
 - MAESTRO-E: [link](https://app.globus.org/file-manager?origin_id=63862b12-9f93-4f7c-ad7b-5a14ab5d1af2&origin_path=%2F)
 
+- Downloading this dataset requires [Globus](https://www.globus.org) or [Globus Connect Personal](https://www.globus.org/globus-connect-personal).
+
+1. Log in and follow setup instructions  
+2. Go to the dataset link: [https://app.globus.org/file-manager?origin_id=YOUR_SHARED_COLLECTION_ID](https://app.globus.org/file-manager?origin_id=YOUR_SHARED_COLLECTION_ID)  
+3. Click **“Transfer or Sync to…”**  
+4. Choose your machine or HPC endpoint as the destination
+
 You can also generate your own error datasets based on our code [here](https://github.com/ben2002chou/CocoChorales-E_MAESTRO-E):
 ## Pre-trained models
 
