@@ -78,7 +78,16 @@ class InferenceHandler:
         times = np.arange(num_frames) / spectrogram_config.frames_per_second
         return frames, times
 
-    def _split_token_into_length(self, mistake_frames, score_frames, frame_times, max_length=256):
+    def _split_token_into_length(
+        self,
+        mistake_frames,
+        score_frames,
+        mistake_frame_times,
+        score_frame_times,
+        features,
+        max_length=256,
+        return_prompt_row=False
+    ):
         """
         Batch 1: [Frame0, Frame1, Frame2, Frame3] (no padding needed)
         Batch 2: [Frame4, Frame5, Frame6, Frame7] (no padding needed)
@@ -86,28 +95,95 @@ class InferenceHandler:
         max_length: maximum number of frames in a batch
         """
         assert len(mistake_frames.shape) >= 1
-        assert mistake_frames.shape[0] == frame_times.shape[0]
-        print("mistake_frames", mistake_frames.shape, "score_frames", score_frames.shape, "frame_times", frame_times.shape)
-        
-        # find the max frame shape
+        assert mistake_frames.shape[0] == mistake_frame_times.shape[0], (
+            "Mismatch between mistake_frames and mistake_frame_times lengths"
+        )
+        # print("mistake_frames", mistake_frames.shape, "score_frames", score_frames.shape, "mistake_frame_times", mistake_frame_times.shape)
+        assert len(score_frames.shape) >= 1
+        assert score_frames.shape[0] == score_frame_times.shape[0], (
+            "Mismatch between mistake_frames and score_frame_times lengths"
+        )
+        # print("mistake_frames", mistake_frames.shape, "score_frames", score_frames.shape, "score_frame_times", score_frame_times.shape)
+
+        # Find the max frame shape
         max_frame_shape = max(mistake_frames.shape[0], score_frames.shape[0])
         
-        # pad the frames to be of equal length
+        # Pad the frames to be of equal length
         if mistake_frames.shape[0] < max_frame_shape:
             mistake_frames = np.pad(mistake_frames, ((0, max_frame_shape - mistake_frames.shape[0]), (0, 0)), mode='constant')
         if score_frames.shape[0] < max_frame_shape:
             score_frames = np.pad(score_frames, ((0, max_frame_shape - score_frames.shape[0]), (0, 0)), mode='constant')
+        print("last 100 mistake_frames", mistake_frames[-100:], "last 100 score_frames", score_frames[-100:], flush=True)
+        print("last 100 mistake_frame_times", mistake_frame_times[-100:], "last 100 score_frame_times", score_frame_times[-100:], flush=True)
         
         num_segment = math.ceil(mistake_frames.shape[0] / max_length)  # Use mistake_frames shape here
         mistake_batches = []
         score_batches = []
         mistake_frame_times_batches = []
+        score_frame_times_batches = []
         mistake_paddings = []
         score_paddings = []
-        
+        if return_prompt_row is True:
+            prompt_events_start_indices_batches = []
+            prompt_events_end_indices_batches = []
+            prompt_state_events_indices_batches = []
+            
+            # Retrieve event indices from features:
+            prompt_event_start_indices = features["input_event_start_indices"]
+            prompt_event_end_indices = features["input_event_end_indices"]
+            prompt_state_event_indices = features["input_state_event_indices"]
+
+            # Pad prompt-related features (to match score_frames)
+            if len(features["input_event_start_indices"]) < max_frame_shape:
+                prompt_event_start_indices = np.pad(
+                    features["input_event_start_indices"],
+                    (0, max_frame_shape - len(features["input_event_start_indices"])),
+                    mode='constant'
+                )
+            else:
+                prompt_event_start_indices = features["input_event_start_indices"]
+
+            if len(features["input_event_end_indices"]) < max_frame_shape:
+                prompt_event_end_indices = np.pad(
+                    features["input_event_end_indices"],
+                    (0, max_frame_shape - len(features["input_event_end_indices"])),
+                    mode='constant'
+                )
+            else:
+                prompt_event_end_indices = features["input_event_end_indices"]
+
+            if len(features["input_state_event_indices"]) < max_frame_shape:
+                prompt_state_event_indices = np.pad(
+                    features["input_state_event_indices"],
+                    (0, max_frame_shape - len(features["input_state_event_indices"])),
+                    mode='constant'
+                )
+            else:
+                prompt_state_event_indices = features["input_state_event_indices"]
+                
+            print("mistake_frame_times", mistake_frame_times.shape, "score_frame_times", score_frame_times.shape, flush=True)
+            print("max_frame_shape", max_frame_shape, flush=True)
+            
+            # Pad frame times to match the padded frame length.
+            # We extend the shorter array using its last available value.
+            if mistake_frame_times.shape[0] < max_frame_shape:
+                diff = max_frame_shape - mistake_frame_times.shape[0]
+                mistake_frame_times = np.pad(mistake_frame_times, (0, diff), mode='edge')
+            if score_frame_times.shape[0] < max_frame_shape:
+                diff = max_frame_shape - score_frame_times.shape[0]
+                score_frame_times = np.pad(score_frame_times, (0, diff), mode='edge')
+
+            print("shape after padding", mistake_frame_times.shape, score_frame_times.shape, flush=True)
+            # print("prompt_event_start_indices", prompt_event_start_indices.shape, "prompt_event_end_indices", prompt_event_end_indices.shape, "prompt_state_event_indices", prompt_state_event_indices.shape, flush=True)
+            # print("score_frame_times", score_frame_times.shape, flush=True)
+            # print("score_frames", score_frames.shape, flush=True)
+            assert len(prompt_event_start_indices) == len(score_frames), "Feature indices length mismatch"
+            assert len(prompt_event_end_indices) == len(score_frames), "Feature indices length mismatch"
+            assert len(prompt_state_event_indices) == len(score_frames), "Feature indices length mismatch"
         for i in range(num_segment):
             mistake_batch = np.zeros((max_length, *mistake_frames.shape[1:]))
-            frame_times_batch = np.zeros((max_length))
+            mistake_frame_times_batch = np.zeros((max_length))
+            score_frame_times_batch = np.zeros((2 * max_length))
             score_batch = np.zeros((2 * max_length, *score_frames.shape[1:]))
             
             start_idx = i * max_length
@@ -120,21 +196,86 @@ class InferenceHandler:
             if score_start_idx < 0:
                 start_padding = -score_start_idx
                 score_start_idx = 0
-            
+
+            # Check if mistake_frame_times has enough elements
+            if start_idx + end_idx > mistake_frame_times.shape[0]:
+                adjusted_end_idx = mistake_frame_times.shape[0] - start_idx
+                # print(
+                #     f"Warning: mistake_frame_times is shorter than expected. Adjusting end_idx from {end_idx} to {adjusted_end_idx}",
+                #     flush=True,
+                # )
+                end_idx = adjusted_end_idx
+                
+            if score_start_idx + score_end_idx > score_frame_times.shape[0]:
+                adjusted_score_end_idx = score_frame_times.shape[0] - score_start_idx
+                # print(
+                #     f"Warning: score_frame_times is shorter than expected. Adjusting score_end_idx from {score_end_idx} to {adjusted_score_end_idx}",
+                #     flush=True,
+                # )
+                score_end_idx = adjusted_score_end_idx
+                
+            print("shape of mistake_batch", mistake_batch.shape, "shape of score_batch", score_batch.shape, flush=True)
+            print("shape of mistake_frames", mistake_frames.shape, "shape of score_frames", score_frames.shape, flush=True)
+            print("i", i, "start_idx", start_idx, "end_idx", end_idx, "score_start_idx", score_start_idx, "score_end_idx", score_end_idx, flush=True)
+
             mistake_batch[0:end_idx, ...] = mistake_frames[start_idx:start_idx + end_idx, ...]
             score_batch[start_padding:start_padding + score_end_idx, ...] = score_frames[score_start_idx:score_start_idx + score_end_idx - start_padding, ...]
             
-            # Adjust frame_times_batch to match mistake_frames segmentation
-            frame_times_batch[0:end_idx] = frame_times[start_idx:start_idx + end_idx]
+            # Adjust mistake_frame_times_batch to match mistake_frames segmentation
+            mistake_frame_times_batch[0:end_idx] = mistake_frame_times[start_idx:start_idx + end_idx]
+            score_frame_times_batch[start_padding:start_padding + score_end_idx] = score_frame_times[score_start_idx:score_start_idx + score_end_idx - start_padding]
             
             mistake_batches.append(mistake_batch)
             score_batches.append(score_batch)
-            mistake_frame_times_batches.append(frame_times_batch)
+            mistake_frame_times_batches.append(mistake_frame_times_batch)
+            score_frame_times_batches.append(score_frame_times_batch)
             mistake_paddings.append(end_idx)
             score_paddings.append(score_end_idx)
-        
-        print("frame_times")
-        return np.stack(mistake_batches, axis=0), np.stack(score_batches, axis=0), np.stack(mistake_frame_times_batches, axis=0), mistake_paddings, score_paddings
+            if return_prompt_row is True:
+                prompt_event_start_indices_batch = np.zeros((2 * max_length))
+                prompt_event_end_indices_batch = np.zeros((2 * max_length))
+                prompt_state_event_indices_batch = np.zeros((2 * max_length))
+
+                prompt_event_start_indices_batch[start_padding:start_padding + score_end_idx] = prompt_event_start_indices[score_start_idx:score_start_idx + score_end_idx - start_padding]
+                prompt_event_end_indices_batch[start_padding:start_padding + score_end_idx] = prompt_event_end_indices[score_start_idx:score_start_idx + score_end_idx - start_padding]
+                prompt_state_event_indices_batch[start_padding:start_padding + score_end_idx] = prompt_state_event_indices[score_start_idx:score_start_idx + score_end_idx - start_padding]
+
+                prompt_events_start_indices_batches.append(prompt_event_start_indices_batch)
+                prompt_events_end_indices_batches.append(prompt_event_end_indices_batch)
+                prompt_state_events_indices_batches.append(prompt_state_event_indices_batch)
+                
+        if return_prompt_row is True:
+        # print("frame_times")
+            batch_features = {
+                "targets": features["targets"],
+                "prompt_event_start_indices": prompt_events_start_indices_batches,
+                "prompt_event_end_indices": prompt_events_end_indices_batches,
+                "prompt_state_events": features["state_events"],
+                "prompt_state_event_indices": prompt_state_events_indices_batches,
+            }
+            # print shapes of stacked batches
+            # print("mistake_batches", np.stack(mistake_batches, axis=0).shape, "score_batches", np.stack(score_batches, axis=0).shape, "mistake_frame_times_batches", np.stack(mistake_frame_times_batches, axis=0).shape, "score_frame_times_batches", np.stack(score_frame_times_batches, axis=0).shape, flush=True)
+            # # print shape of stacked prompt batches
+            # print("prompt_event_start_indices_batches", np.stack(prompt_events_start_indices_batches, axis=0).shape, "prompt_event_end_indices_batches", np.stack(prompt_events_end_indices_batches, axis=0).shape, "prompt_state_event_indices_batches", np.stack(prompt_state_events_indices_batches, axis=0).shape, flush=True)
+        if return_prompt_row:
+            return (
+                np.stack(mistake_batches, axis=0),
+                np.stack(score_batches, axis=0),
+                np.stack(mistake_frame_times_batches, axis=0),
+                np.stack(score_frame_times_batches, axis=0),
+                mistake_paddings,
+                score_paddings,
+                batch_features
+            )
+        else:
+            return (
+                np.stack(mistake_batches, axis=0),
+                np.stack(score_batches, axis=0),
+                np.stack(mistake_frame_times_batches, axis=0),
+                np.stack(score_frame_times_batches, axis=0),
+                mistake_paddings,
+                score_paddings
+            )
     def _compute_spectrograms(self, mistake_inputs, score_inputs):
         mistake_outputs = []
  
