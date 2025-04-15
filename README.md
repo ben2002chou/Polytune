@@ -70,6 +70,13 @@ python polytune_test_inference.py \
   eval.contiguous_inference=True \
   split_frame_length=2000
 ```
+## Interpeting Outputs
+
+The output is a MIDI file containing three tracks:
+
+- Track 1: Extra notes
+- Track 2: Missing notes
+- Track 3: Correct notes
 
 ## Datasets
 
