@@ -314,12 +314,23 @@ class InferenceHandler:
         return mistake_melspec, score_melspec
 
     def _preprocess(self, mistake_audio, score_audio):
-        mistake_frames, frame_times = self._audio_to_frames(mistake_audio)
+        mistake_frames, mistake_frame_times = self._audio_to_frames(mistake_audio)
         # print("mistake_frames", mistake_frames.shape, "frame_times", frame_times.shape)
-        score_frames, _ = self._audio_to_frames(score_audio)
+        score_frames, score_frame_times = self._audio_to_frames(score_audio)
         # print("score_frames", score_frames.shape)
-        mistake_frames, score_frames, frame_times, mistake_paddings, score_paddings = self._split_token_into_length(
-            mistake_frames, score_frames, frame_times
+        (
+            mistake_frames,
+            score_frames,
+            mistake_frame_times,
+            score_frame_times,
+            mistake_paddings,
+            score_paddings
+        ) = self._split_token_into_length(
+            mistake_frames,
+            score_frames,
+            mistake_frame_times,
+            score_frame_times,
+            {"targets": None, "state_events": None}
         )
         mistake_inputs, score_inputs = self._compute_spectrograms(mistake_frames, score_frames)
         # print("mistake_inputs", mistake_inputs.shape, "score_inputs", score_inputs.shape)
