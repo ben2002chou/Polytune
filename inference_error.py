@@ -342,7 +342,7 @@ class InferenceHandler:
 
             score_inputs[i, int(p/2)+2:] = 0
             
-        return mistake_inputs, score_inputs, frame_times
+        return mistake_inputs, score_inputs, mistake_frame_times
 
     def _batching(self, mistake_tensors, score_tensors, frame_times, batch_size=1):
         mistake_batches = []
