@@ -101,6 +101,11 @@ Pretrained weights can be downloaded here:
 
 Baseline: Located in ./baseline/MT3_baseline
 
+## TODO
+
+There are some label files in the current download link for CocoChorales that aren't used. These need to be removed. This doesn't affect the usage of the code as the dataset loading code filters out redundant labels.
+
+
 ## Citation
 
 If you use our dataset in your research, please cite our paper:
