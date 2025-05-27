@@ -1,124 +1,148 @@
-# Polytune
-
 **Detecting Music Performance Errors with Transformers**  
 *AAAI 2025*
 
-Polytune introduces a transformer-based model for end-to-end music error detection.
+Polytune introduces a transformer-based model for end-to-end music performance error detection.
 
-**[Read the Paper](https://arxiv.org/pdf/2501.02030)**
+📄 **[Read the Paper](https://arxiv.org/pdf/2501.02030)**
+
+---
+
 ## 📊 Project Overview
 
-![Diagram](poster_AAAI.png)
+![Model Diagram](poster_AAAI.png)
 
-## 🎥 Demo
+---
 
-Click below to watch the demo:
+## 🎥 Demo Video
 
-[![Demo Video](https://img.youtube.com/vi/y91Qts1TWBY/0.jpg)](https://youtu.be/y91Qts1TWBY)
+<p align="center">
+  <a href="https://youtu.be/y91Qts1TWBY">
+    <img src="https://img.youtube.com/vi/y91Qts1TWBY/0.jpg" alt="Demo Video" width="640"/>
+  </a>
+</p>
 
+<p align="center">
+  <em>Click the thumbnail to watch the demo on YouTube.</em>
+</p>
 
-## How to Run
+---
 
-Clone the repository and set up the environment:
+## ⚙️ Environment Setup
+
+1. Install **Python 3.11**
+2. Create and activate the Conda environment:
+
+   ```bash
+   conda env create -n polytune python=3.11
+   conda activate polytune
+   ```
+
+3. Install required packages:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+---
+
+## 🚀 Running the Code
+
+### Training
+
 ```bash
-git clone <repository-url>
-cd Polytune
-conda env create -n polytune python==3.XX
-conda activate polytune
-```
-
-## Environment Setup
-
-Ensure you have the correct environment configuration:
-- Install Python 3.XX
-- Create and activate the Conda environment:
-  ```bash
-  conda env create -n polytune python==3.11
-  conda activate polytune
-  ```
-- Install the required dependencies (via pip):
-  ```bash
-  pip install -r requirements.txt
-  ```
-
-Training:
-```bash
-python train_polytune.py \
-  --config-path="config" \
-  --config-name="config_maestro/coco" \
-  'devices=[0]' \
-  'hydra/job_logging=disabled' \
-  'model="polytune"' \
-  'dataset="MAESTRO/CocoChorales"' \
+python train_polytune.py \\
+  --config-path="config" \\
+  --config-name="config_maestro/coco" \\
+  'devices=[0]' \\
+  'hydra/job_logging=disabled' \\
+  'model="polytune"' \\
+  'dataset="MAESTRO/CocoChorales"' \\
   'split_frame_length=2000'
 ```
 
-Evaluation:
+### Evaluation
+
 ```bash
-python test_polytune.py \
-  --config-dir="config" \
-  --config-name="config_maestro/coco" \
-  model="polytune" \
-  path="pretrained.ckpt" \
-  eval.eval_dataset="MAESTRO/CocoChorales" \
-  eval.exp_tag_name="Polytune" \
-  hydra/job_logging=disabled \
-  eval.is_sanity_check=True \
-  eval.contiguous_inference=True \
+python test_polytune.py \\
+  --config-dir="config" \\
+  --config-name="config_maestro/coco" \\
+  model="polytune" \\
+  path="pretrained.ckpt" \\
+  eval.eval_dataset="MAESTRO/CocoChorales" \\
+  eval.exp_tag_name="Polytune" \\
+  hydra/job_logging=disabled \\
+  eval.is_sanity_check=True \\
+  eval.contiguous_inference=True \\
   split_frame_length=2000
 ```
 
-Inference:
+### Inference
+
 ```bash
-python polytune_test_inference.py \
-  --config-dir="config" \
-  --config-name="config_maestro" \
-  model="polytune" \
-  path="pretrained.ckpt" \
-  hydra/job_logging=disabled \
-  eval.is_sanity_check=True \
-  eval.contiguous_inference=True \
+python polytune_test_inference.py \\
+  --config-dir="config" \\
+  --config-name="config_maestro" \\
+  model="polytune" \\
+  path="pretrained.ckpt" \\
+  hydra/job_logging=disabled \\
+  eval.is_sanity_check=True \\
+  eval.contiguous_inference=True \\
   split_frame_length=2000
 ```
-## Interpeting Outputs
 
-The output is a MIDI file containing three tracks:
+---
 
-- Track 1: Extra notes
-- Track 2: Missing notes
-- Track 3: Correct notes
+## 🎧 Output Format
 
-## Datasets
+The model produces a multi-track MIDI file:
+- **Track 1**: Extra notes
+- **Track 2**: Missing notes
+- **Track 3**: Correct notes
 
-- CocoChorales-E: [link](https://app.globus.org/file-manager?origin_id=55272af5-6d96-4381-a3ea-8d7197e57b33&origin_path=%2F)
-- MAESTRO-E: [link](https://app.globus.org/file-manager?origin_id=63862b12-9f93-4f7c-ad7b-5a14ab5d1af2&origin_path=%2F)
+---
 
-- Downloading this dataset requires [Globus](https://www.globus.org) or [Globus Connect Personal](https://www.globus.org/globus-connect-personal).
+## 🎼 Datasets
 
-1. Log in and follow setup instructions  
-2. Go to the dataset link 
-3. Click **“Transfer or Sync to…”**  
-4. Choose your machine or HPC endpoint as the destination
+- **CocoChorales-E**: [Download](https://app.globus.org/file-manager?origin_id=55272af5-6d96-4381-a3ea-8d7197e57b33&origin_path=%2F)
+- **MAESTRO-E**: [Download](https://app.globus.org/file-manager?origin_id=63862b12-9f93-4f7c-ad7b-5a14ab5d1af2&origin_path=%2F)
 
-You can also generate your own error datasets based on our code [here](https://github.com/ben2002chou/CocoChorales-E_MAESTRO-E):
-## Pre-trained models
+Download requires [Globus](https://www.globus.org) or [Globus Connect Personal](https://www.globus.org/globus-connect-personal).
 
-Pretrained weights can be downloaded here:
-- [Download Weights](https://huggingface.co/ben2002chou/Polytune/tree/main)
+To download:
+1. Log in and follow the setup instructions  
+2. Visit the dataset link  
+3. Click **"Transfer or Sync to..."**  
+4. Select your local machine or HPC endpoint
 
+You can also generate your own error datasets using our code:  
+🔗 [CocoChorales-E_MAESTRO-E GitHub Repo](https://github.com/ben2002chou/CocoChorales-E_MAESTRO-E)
 
-## Reproducing Results
+---
 
-Baseline: Located in ./baseline/MT3_baseline
+## 🧠 Pretrained Models
 
-## TODO
+Pretrained checkpoints are available here:  
+📦 [Download from Hugging Face](https://huggingface.co/ben2002chou/Polytune/tree/main)
 
-There are some label files in the current download link for CocoChorales that aren't used. These need to be removed. This doesn't affect the usage of the code as the dataset loading code filters out redundant labels.
+---
 
+## 📊 Reproducing Results
 
-## Citation
+The baseline implementation (MT3) can be found in:  
+`./baseline/MT3_baseline/`
 
-If you use our dataset in your research, please cite our paper:
+---
+
+## 📌 Notes
+
+There are a few unused label files currently included in the CocoChorales dataset.  
+The data loader automatically filters them.
+
+---
+
+## 📚 Citation
+
+If you use Polytune or our datasets, please cite:
 
 ```bibtex
 @inproceedings{chou_detecting_2025,
@@ -130,3 +154,4 @@ If you use our dataset in your research, please cite our paper:
   publisher = {AAAI},
   year      = {2025}
 }
+```
