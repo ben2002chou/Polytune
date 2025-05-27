@@ -14,7 +14,7 @@ Polytune introduces a transformer-based model for end-to-end music error detecti
 
 Click below to watch the demo:
 
-[![Demo Video](https://img.youtube.com/vi/y91Qts1TWBY/maxresdefault.jpg)](https://youtu.be/y91Qts1TWBY)
+[![Demo Video](https://img.youtube.com/vi/y91Qts1TWBY/0.jpg)](https://youtu.be/y91Qts1TWBY)
 
 
 ## How to Run
