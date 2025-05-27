@@ -6,6 +6,10 @@
 Polytune introduces a transformer-based model for end-to-end music error detection.
 
 **[Read the Paper](https://arxiv.org/pdf/2501.02030)**
+## 📊 Project Overview
+
+![Diagram](poster_AAAI.png)
+
 
 ## How to Run
 
