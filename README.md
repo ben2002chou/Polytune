@@ -1,19 +1,21 @@
+# Polytune
+
 **Detecting Music Performance Errors with Transformers**  
-*AAAI 2025*
+*Accepted at AAAI 2025*
 
 Polytune introduces a transformer-based model for end-to-end music performance error detection.
 
-📄 **[Read the Paper](https://arxiv.org/pdf/2501.02030)**
+**[Read the Paper](https://arxiv.org/pdf/2501.02030)**
 
----
 
-## 📊 Project Overview
+
+## Project Overview
 
 ![Model Diagram](poster_AAAI.png)
 
----
 
-## 🎥 Demo Video
+
+## Demo Video
 
 <p align="center">
   <a href="https://youtu.be/y91Qts1TWBY">
@@ -25,9 +27,9 @@ Polytune introduces a transformer-based model for end-to-end music performance e
   <em>Click the thumbnail to watch the demo on YouTube.</em>
 </p>
 
----
 
-## ⚙️ Environment Setup
+
+## Environment Setup
 
 1. Install **Python 3.11**
 2. Create and activate the Conda environment:
@@ -43,65 +45,65 @@ Polytune introduces a transformer-based model for end-to-end music performance e
    pip install -r requirements.txt
    ```
 
----
 
-## 🚀 Running the Code
+
+## Running the Code
 
 ### Training
 
 ```bash
-python train_polytune.py \\
-  --config-path="config" \\
-  --config-name="config_maestro/coco" \\
-  'devices=[0]' \\
-  'hydra/job_logging=disabled' \\
-  'model="polytune"' \\
-  'dataset="MAESTRO/CocoChorales"' \\
+python train_polytune.py \
+  --config-path="config" \
+  --config-name="config_maestro/coco" \
+  'devices=[0]' \
+  'hydra/job_logging=disabled' \
+  'model="polytune"' \
+  'dataset="MAESTRO/CocoChorales"' \
   'split_frame_length=2000'
 ```
 
 ### Evaluation
 
 ```bash
-python test_polytune.py \\
-  --config-dir="config" \\
-  --config-name="config_maestro/coco" \\
-  model="polytune" \\
-  path="pretrained.ckpt" \\
-  eval.eval_dataset="MAESTRO/CocoChorales" \\
-  eval.exp_tag_name="Polytune" \\
-  hydra/job_logging=disabled \\
-  eval.is_sanity_check=True \\
-  eval.contiguous_inference=True \\
+python test_polytune.py \
+  --config-dir="config" \
+  --config-name="config_maestro/coco" \
+  model="polytune" \
+  path="pretrained.ckpt" \
+  eval.eval_dataset="MAESTRO/CocoChorales" \
+  eval.exp_tag_name="Polytune" \
+  hydra/job_logging=disabled \
+  eval.is_sanity_check=True \
+  eval.contiguous_inference=True \
   split_frame_length=2000
 ```
 
 ### Inference
 
 ```bash
-python polytune_test_inference.py \\
-  --config-dir="config" \\
-  --config-name="config_maestro" \\
-  model="polytune" \\
-  path="pretrained.ckpt" \\
-  hydra/job_logging=disabled \\
-  eval.is_sanity_check=True \\
-  eval.contiguous_inference=True \\
+python polytune_test_inference.py \
+  --config-dir="config" \
+  --config-name="config_maestro" \
+  model="polytune" \
+  path="pretrained.ckpt" \
+  hydra/job_logging=disabled \
+  eval.is_sanity_check=True \
+  eval.contiguous_inference=True \
   split_frame_length=2000
 ```
 
----
 
-## 🎧 Output Format
+
+## Output Format
 
 The model produces a multi-track MIDI file:
 - **Track 1**: Extra notes
 - **Track 2**: Missing notes
 - **Track 3**: Correct notes
 
----
 
-## 🎼 Datasets
+
+## Datasets
 
 - **CocoChorales-E**: [Download](https://app.globus.org/file-manager?origin_id=55272af5-6d96-4381-a3ea-8d7197e57b33&origin_path=%2F)
 - **MAESTRO-E**: [Download](https://app.globus.org/file-manager?origin_id=63862b12-9f93-4f7c-ad7b-5a14ab5d1af2&origin_path=%2F)
@@ -109,38 +111,38 @@ The model produces a multi-track MIDI file:
 Download requires [Globus](https://www.globus.org) or [Globus Connect Personal](https://www.globus.org/globus-connect-personal).
 
 To download:
-1. Log in and follow the setup instructions  
+1. Log in and follow setup instructions  
 2. Visit the dataset link  
 3. Click **"Transfer or Sync to..."**  
 4. Select your local machine or HPC endpoint
 
 You can also generate your own error datasets using our code:  
-🔗 [CocoChorales-E_MAESTRO-E GitHub Repo](https://github.com/ben2002chou/CocoChorales-E_MAESTRO-E)
+[CocoChorales-E_MAESTRO-E GitHub Repo](https://github.com/ben2002chou/CocoChorales-E_MAESTRO-E)
 
----
 
-## 🧠 Pretrained Models
+
+## Pretrained Models
 
 Pretrained checkpoints are available here:  
-📦 [Download from Hugging Face](https://huggingface.co/ben2002chou/Polytune/tree/main)
+[Download from Hugging Face](https://huggingface.co/ben2002chou/Polytune/tree/main)
 
----
 
-## 📊 Reproducing Results
+
+## Reproducing Results
 
 The baseline implementation (MT3) can be found in:  
 `./baseline/MT3_baseline/`
 
----
 
-## 📌 Notes
+
+## Notes
 
 There are a few unused label files currently included in the CocoChorales dataset.  
-The data loader automatically filters them.
+These are harmless — the data loader automatically filters them.
 
----
 
-## 📚 Citation
+
+## Citation
 
 If you use Polytune or our datasets, please cite:
 
