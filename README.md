@@ -1,7 +1,7 @@
 # Polytune
 
 **Detecting Music Performance Errors with Transformers**  
-*Accepted at AAAI 2025*
+*AAAI 2025*
 
 Polytune introduces a transformer-based model for end-to-end music performance error detection.
 
