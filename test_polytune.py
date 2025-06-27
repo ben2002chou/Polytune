@@ -226,11 +226,9 @@ def main(cfg):
             random_offset = np.random.randint(0, len(mistakes_audio_dir) - cfg.eval.eval_first_n_examples)
         mistakes_audio_dir = mistakes_audio_dir[random_offset: random_offset + cfg.eval.eval_first_n_examples]
         scores_audio_dir = scores_audio_dir[random_offset: random_offset + cfg.eval.eval_first_n_examples]
-        # mistakes_audio_dir = mistakes_audio_dir[: cfg.eval.eval_first_n_examples]
-        # scores_audio_dir = scores_audio_dir[: cfg.eval.eval_first_n_examples]
-    mistakes_audio_dir = ['/depot/yunglu/data/datasets_ben/maestro/maestro_with_mistakes_unaligned/mistake/MIDI-Unprocessed_R1_D1-1-8_mid--AUDIO-from_mp3_02_R1_2015_wav--1/mix.wav']
-    scores_audio_dir = ['/depot/yunglu/data/datasets_ben/maestro/maestro_with_mistakes_unaligned/score/MIDI-Unprocessed_R1_D1-1-8_mid--AUDIO-from_mp3_02_R1_2015_wav--1/mix.wav']
-        
+        mistakes_audio_dir = mistakes_audio_dir[: cfg.eval.eval_first_n_examples]
+        scores_audio_dir = scores_audio_dir[: cfg.eval.eval_first_n_examples]
+
 
     mel_norm = True
     
