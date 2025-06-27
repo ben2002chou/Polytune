@@ -323,8 +323,8 @@ def main(cfg):
             
         mistakes_audio_dir = mistakes_audio_dir[random_offset: random_offset + cfg.eval.eval_first_n_examples]
         scores_audio_dir = scores_audio_dir[random_offset: random_offset + cfg.eval.eval_first_n_examples]
-        # mistakes_audio_dir = mistakes_audio_dir[: cfg.eval.eval_first_n_examples]
-        # scores_audio_dir = scores_audio_dir[: cfg.eval.eval_first_n_examples]
+        mistakes_audio_dir = mistakes_audio_dir[: cfg.eval.eval_first_n_examples]
+        scores_audio_dir = scores_audio_dir[: cfg.eval.eval_first_n_examples]
         
 
     mel_norm = True
