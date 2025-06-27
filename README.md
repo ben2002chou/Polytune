@@ -138,7 +138,7 @@ The baseline implementation (MT3) can be found in:
 ## Notes
 
 There are a few unused label files currently included in the CocoChorales dataset.  
-These are harmless — the data loader automatically filters them.
+These are harmless. The data loader automatically filters them.
 
 
 
