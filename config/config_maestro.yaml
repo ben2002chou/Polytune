@@ -1,10 +1,10 @@
-num_epochs: 800
+num_epochs: 350
 devices: 1
 mode: "train"
 model_type: ${hydra:runtime.choices.model} # parse the filename of the config
 dataset_type: ${hydra:runtime.choices.dataset}
 seed: 365
-path: 
+path: "add_weights_for_cocochorales_here_to_initialize"
 path_old:
 #/home/chou150/code/cav-mae/exp_midi/testmae02-audioset-cav-mae-balNone-lr5e-5-epoch25-bs256-normTrue-c0.01-p1.0-tpFalse-mr-unstructured-0.75-20240429035316/models/audio_model.best.pth
 event_length: 1024
