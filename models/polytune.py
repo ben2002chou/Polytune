@@ -57,7 +57,7 @@ class T5ForConditionalGeneration(T5PreTrainedModel):
         # NOTE: temporary change, for MT3 please uncomment this line
         self.proj = nn.Linear(self.model_dim, self.model_dim, bias=False)
 
-        # NOTE: for encodec model please uncomment this line
+        # NOTE: for encoder model please uncomment this line
         # self.proj = nn.Embedding(
         #     config.encoder_vocab_size, config.d_model)
 
