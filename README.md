@@ -126,6 +126,16 @@ You can also generate your own error datasets using our code:
 Pretrained checkpoints are available here:  
 [Download from Hugging Face](https://huggingface.co/ben2002chou/Polytune/tree/main)
 
+Two MAESTRO-E variants are available:
+
+- [Official checkpoints](https://huggingface.co/ben2002chou/Polytune/tree/main/MAESTRO-E)
+- [Robust piano v3 checkpoint and details](https://huggingface.co/ben2002chou/Polytune/tree/main/MAESTRO-E/robust-piano-v3)
+
+The optional robust-piano checkpoint starts from the official weights and is
+fine-tuned on expanded multi-piano synthetic data with original-example replay.
+It is intended for stronger piano-timbre robustness and does not replace the
+official checkpoint used to reproduce the published results.
+
 
 
 ## Reproducing Results
